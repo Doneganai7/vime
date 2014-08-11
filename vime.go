@@ -79,7 +79,7 @@ func (this *Vime) Initialize() {
     if generated < this.Win_condition + 2 { this.Initialize() }
 }
 func (this *Vime) flush() {
-    for i := 0; i < 40; i++ { fmt.Println("") }
+    for i := 0; i < 100; i++ { fmt.Println("") }
 }
 func (this *Vime) ping(input int) {
     for i := 0; i < input; i++ {
