@@ -1,5 +1,5 @@
 package main
-import "../../vime"
+import "vime"
 
 func main() {
     var game vime.Vime
