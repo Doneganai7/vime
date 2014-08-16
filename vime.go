@@ -144,20 +144,20 @@ func (this *Vime) ping(input int) {
 }
 func (this *Vime) step_on() {
     switch this.result {
-        case this.Objective: this.points += 1
-        case this.Penalty: this.points -= 1
-        case this.Danger: this.lost = true; this.death = "danger"
-        case this.Launcher_r, this.Launcher_l, this.Launcher_u, this.Launcher_d:
-            this.auto = true
-            this.launch_count += 1
+    case this.Objective: this.points += 1
+    case this.Penalty: this.points -= 1
+    case this.Danger: this.lost = true; this.death = "danger"
+    case this.Launcher_r, this.Launcher_l, this.Launcher_u, this.Launcher_d:
+        this.auto = true
+        this.launch_count += 1
     }
     this.field[this.player_y][this.player_x] = this.last
 }
 func (this *Vime) step_off() {
     this.last = this.field[this.player_y][this.player_x]
     switch this.last {
-        case this.Penalty, this.Objective: this.last = this.Empty
-        case this.Platform: this.last = this.Obstruction
+    case this.Penalty, this.Objective: this.last = this.Empty
+    case this.Platform: this.last = this.Obstruction
     }
     this.field[this.player_y][this.player_x] = this.Player
 }
@@ -210,34 +210,34 @@ func (this *Vime) automove() {
     }
     if this.auto == true {
         switch this.result {
-            case this.Launcher_r:
-                if this.last != this.Launcher_l {
-                    this.right(1)
-                } else {
-                    this.lost = true
-                    this.death = "launch"
-                }
-            case this.Launcher_l:
-                if this.last != this.Launcher_r {
-                    this.left(1)
-                } else {
-                    this.lost = true
-                    this.death = "launch"
-                }
-            case this.Launcher_u:
-                if this.last != this.Launcher_d {
-                    this.up(1)
-                } else {
-                    this.lost = true
-                    this.death = "launch"
-                }
-            case this.Launcher_d:
-                if this.last != this.Launcher_u {
-                    this.down(1)
-                } else {
-                    this.lost = true
-                    this.death = "launch"
-                }
+        case this.Launcher_r:
+            if this.last != this.Launcher_l {
+                this.right(1)
+            } else {
+                this.lost = true
+                this.death = "launch"
+            }
+        case this.Launcher_l:
+            if this.last != this.Launcher_r {
+                this.left(1)
+            } else {
+                this.lost = true
+                this.death = "launch"
+            }
+        case this.Launcher_u:
+            if this.last != this.Launcher_d {
+                this.up(1)
+            } else {
+                this.lost = true
+                this.death = "launch"
+            }
+        case this.Launcher_d:
+            if this.last != this.Launcher_u {
+                this.down(1)
+            } else {
+                this.lost = true
+                this.death = "launch"
+            }
         }
     this.auto = false
     }
@@ -260,18 +260,18 @@ func (this *Vime) status() {
     this.flush()
     for i := 0; i < this.Field_limit; i++ {
         switch i {
-            case 0: fmt.Println(this.field[i], " ", "Objective: collect", this.Win_condition)
-            case 1: fmt.Println(this.field[i], " ", this.Objective, "is your objective")
-            case 2: fmt.Println(this.field[i], " ", this.Obstruction, "obstructs you")
-            case 3: fmt.Println(this.field[i], " ", this.Penalty, "is counterproductive")
-            case 4: fmt.Println(this.field[i], " ", this.Danger, "will end you")
-            case 5: fmt.Println(this.field[i], " ", this.Platform, "will allow you once")
-            case 6: fmt.Println(this.field[i], " ", this.Launcher_r, this.Launcher_l, this.Launcher_d, this.Launcher_u, "will move you")
-            case 7: fmt.Println(this.field[i], " ", "Quit with q (unless changed)")
-            case 8: fmt.Println(this.field[i], " ", "Ping yourself with with z (unless changed)")
-            case 9: fmt.Println(this.field[i], " ", "Execute action with \"Enter\"")
-            case 10: fmt.Println(this.field[i], " ", "Points:", this.points)
-            default: fmt.Println(this.field[i])
+        case 0: fmt.Println(this.field[i], " ", "Objective: collect", this.Win_condition)
+        case 1: fmt.Println(this.field[i], " ", this.Objective, "is your objective")
+        case 2: fmt.Println(this.field[i], " ", this.Obstruction, "obstructs you")
+        case 3: fmt.Println(this.field[i], " ", this.Penalty, "is counterproductive")
+        case 4: fmt.Println(this.field[i], " ", this.Danger, "will end you")
+        case 5: fmt.Println(this.field[i], " ", this.Platform, "will allow you once")
+        case 6: fmt.Println(this.field[i], " ", this.Launcher_r, this.Launcher_l, this.Launcher_d, this.Launcher_u, "will move you")
+        case 7: fmt.Println(this.field[i], " ", "Quit with q (unless changed)")
+        case 8: fmt.Println(this.field[i], " ", "Ping yourself with with z (unless changed)")
+        case 9: fmt.Println(this.field[i], " ", "Execute action with \"Enter\"")
+        case 10: fmt.Println(this.field[i], " ", "Points:", this.points)
+        default: fmt.Println(this.field[i])
         }
     }
 }
@@ -290,20 +290,20 @@ func (this *Vime) Run() {
         fmt.Scanf("%s",&this.instruction)
     } else {
         switch this.death {
-            case "danger":
-                fmt.Println("You were ended.")
-                fmt.Scanf("%s",&this.instruction)
-            case "obstruction":
-                fmt.Println("You were launched up against a wall until you lost conciousness.")
-                fmt.Scanf("%s",&this.instruction)
-            case "launch":
-                fmt.Println("As you endlessly bounce between the launchers, you slowly resign yourself to your strange fate.")
-                fmt.Println("You are absolutely sure that there are ways to die that are more stupid and trivial than this, but you cannot seem to think of any.")
-                fmt.Println("Oh well, plenty of time for that now.")
-                fmt.Scanf("%s",&this.instruction)
-            default:
-                fmt.Println("Game Over")
-                fmt.Scanf("%s",&this.instruction)
+        case "danger":
+            fmt.Println("You were ended.")
+            fmt.Scanf("%s",&this.instruction)
+        case "obstruction":
+            fmt.Println("You were launched up against a wall until you lost conciousness.")
+            fmt.Scanf("%s",&this.instruction)
+        case "launch":
+            fmt.Println("As you endlessly bounce between the launchers, you slowly resign yourself to your strange fate.")
+            fmt.Println("You are absolutely sure that there are ways to die that are more stupid and trivial than this, but you cannot seem to think of any.")
+            fmt.Println("Oh well, plenty of time for that now.")
+            fmt.Scanf("%s",&this.instruction)
+        default:
+            fmt.Println("Game Over")
+            fmt.Scanf("%s",&this.instruction)
         }
     }
 }
