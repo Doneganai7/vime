@@ -2,6 +2,7 @@ package vime
 import "fmt"
 import "math/rand"
 import "time"
+import "strings"
 
 type Vime struct {
     points int
@@ -16,8 +17,8 @@ type Vime struct {
     launch_count int
     death string
 
-    Win_condition int
     Field_limit int
+    Win_condition int
 
     Obstruction string
     Objective string
@@ -32,6 +33,8 @@ type Vime struct {
     Player string
     Player_alt string
 
+    // Set these to -1 to disable them.
+    // A 0 value gives them default values during initialization.
     Obstruction_prob int
     Objective_prob int
     Danger_prob int
@@ -41,6 +44,17 @@ type Vime struct {
     Launcher_l_prob int
     Launcher_u_prob int
     Launcher_d_prob int
+
+    Key_r string
+    Key_l string
+    Key_u string
+    Key_d string
+    Key_R string
+    Key_L string
+    Key_U string
+    Key_D string
+    Key_ping string
+    Key_quit string
 }
 func (this *Vime) Initialize() {
     this.lost = false
@@ -54,26 +68,37 @@ func (this *Vime) Initialize() {
 
     if this.Empty == "" { this.Empty = " " }
     if this.Player == "" { this.Player = "⍟" }
-    if this.Player_alt == "" { this.Player_alt = "✪" }
-    if this.Obstruction == "" { this.Obstruction = "𝌆" }
-    if this.Objective == "" { this.Objective = "+" }
     if this.Danger == "" { this.Danger = "⚠" }
     if this.Penalty == "" { this.Penalty = "-" }
     if this.Platform == "" { this.Platform = "⛀" }
+    if this.Objective == "" { this.Objective = "+" }
     if this.Launcher_r == "" { this.Launcher_r = "→" }
     if this.Launcher_l == "" { this.Launcher_l = "←" }
     if this.Launcher_u == "" { this.Launcher_u = "↑" }
     if this.Launcher_d == "" { this.Launcher_d = "↓" }
+    if this.Player_alt == "" { this.Player_alt = "✪" }
+    if this.Obstruction == "" { this.Obstruction = "𝌆" }
 
     if this.Danger_prob == 0 { this.Danger_prob = 10 }
     if this.Penalty_prob == 0 { this.Penalty_prob = 20 }
-    if this.Obstruction_prob == 0 { this.Obstruction_prob = 15 }
     if this.Platform_prob == 0 { this.Platform_prob = 5 }
-    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
-    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
-    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
-    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
     if this.Objective_prob == 0 { this.Objective_prob = 4 }
+    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
+    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
+    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
+    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
+    if this.Obstruction_prob == 0 { this.Obstruction_prob = 15 }
+
+    if this.Key_r == "" { this.Key_r = "ldfu" }
+    if this.Key_l == "" { this.Key_l = "habo" }
+    if this.Key_u == "" { this.Key_u = "kwp." }
+    if this.Key_d == "" { this.Key_d = "jsne" }
+    if this.Key_R == "" { this.Key_R = "LDFU" }
+    if this.Key_L == "" { this.Key_L = "HABO" }
+    if this.Key_U == "" { this.Key_U = "KWP>" }
+    if this.Key_D == "" { this.Key_D = "JSNE" }
+    if this.Key_ping == "" { this.Key_ping = "zZ" }
+    if this.Key_quit == "" { this.Key_quit = "qQ" }
 
     this.last = this.Empty
     this.field = make([][]string,this.Field_limit)
@@ -95,6 +120,7 @@ func (this *Vime) Initialize() {
             if rand.Intn(100-0) < this.Launcher_d_prob { this.field[i][j] = this.Launcher_d }
             if rand.Intn(100-0) < this.Objective_prob { this.field[i][j] = this.Objective; objectives_generated += 1 }
             if i < 2 || i >= this.Field_limit - 2 || j < 2 || j >= this.Field_limit - 2 {
+                if this.field[i][j] == this.Objective { objectives_generated -= 1 }
                 this.field[i][j] = this.Obstruction
             }
         }
@@ -218,18 +244,16 @@ func (this *Vime) automove() {
 }
 func (this *Vime) execute() {
     var final_letter string = string(this.instruction[len(this.instruction)-1])
-    switch final_letter {
-    case "h": this.left(1)
-    case "l": this.right(1)
-    case "k": this.up(1)
-    case "j": this.down(1)
-    case "H": this.left(2); this.instruction = "h"
-    case "L": this.right(2); this.instruction = "l"
-    case "K": this.up(2); this.instruction = "k"
-    case "J": this.down(2); this.instruction = "j"
-    case "q": this.lost = true
-    case "p": this.ping(3)
-    }
+    if strings.Contains(this.Key_r, final_letter) { this.right(1) }
+    if strings.Contains(this.Key_l, final_letter) { this.left(1) }
+    if strings.Contains(this.Key_u, final_letter) { this.up(1) }
+    if strings.Contains(this.Key_d, final_letter) { this.down(1) }
+    if strings.Contains(this.Key_R, final_letter) { this.right(2); this.instruction = this.Key_r }
+    if strings.Contains(this.Key_L, final_letter) { this.left(2); this.instruction = this.Key_l }
+    if strings.Contains(this.Key_U, final_letter) { this.up(2); this.instruction = this.Key_u }
+    if strings.Contains(this.Key_D, final_letter) { this.down(2); this.instruction = this.Key_d }
+    if strings.Contains(this.Key_ping, final_letter) { this.ping(3) }
+    if strings.Contains(this.Key_quit, final_letter) { this.lost = true }
     this.launch_count = 0
 }
 func (this *Vime) status() {
@@ -238,17 +262,15 @@ func (this *Vime) status() {
             switch i {
                 case 0: fmt.Println(this.field[i], " ", "Objective: collect", this.Win_condition)
                 case 1: fmt.Println(this.field[i], " ", this.Objective, "is your objective")
-                case 2: fmt.Println(this.field[i], " ", this.Obstruction, "blocks the way")
-                case 3: fmt.Println(this.field[i], " ", this.Penalty, "will harm you")
+                case 2: fmt.Println(this.field[i], " ", this.Obstruction, "obstructs you")
+                case 3: fmt.Println(this.field[i], " ", this.Penalty, "is counterproductive")
                 case 4: fmt.Println(this.field[i], " ", this.Danger, "will end you")
                 case 5: fmt.Println(this.field[i], " ", this.Platform, "will allow you once")
                 case 6: fmt.Println(this.field[i], " ", this.Launcher_r, this.Launcher_l, this.Launcher_d, this.Launcher_u, "will move you")
-                case 7: fmt.Println(this.field[i], " ", "Move with h j k l")
-                case 8: fmt.Println(this.field[i], " ", "Hop with H J K L")
-                case 9: fmt.Println(this.field[i], " ", "Quit with q")
-                case 10: fmt.Println(this.field[i], " ", "Ping yourself with with p")
-                case 11: fmt.Println(this.field[i], " ", "Execute action with \"Enter\"")
-                case 12: fmt.Println(this.field[i], " ", "Points:", this.points)
+                case 7: fmt.Println(this.field[i], " ", "Quit with q (unless changed)")
+                case 8: fmt.Println(this.field[i], " ", "Ping yourself with with z (unless changed)")
+                case 9: fmt.Println(this.field[i], " ", "Execute action with \"Enter\"")
+                case 10: fmt.Println(this.field[i], " ", "Points:", this.points)
                 default: fmt.Println(this.field[i])
             }
         }
