@@ -287,6 +287,7 @@ func (this *Vime) Run() {
         this.flush()
     if this.points >= this.Win_condition {
         fmt.Println("You Win")
+        fmt.Scanf("%s",&this.instruction)
     } else {
         switch this.death {
             case "danger":
