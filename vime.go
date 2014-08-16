@@ -257,23 +257,23 @@ func (this *Vime) execute() {
     this.launch_count = 0
 }
 func (this *Vime) status() {
-        this.flush()
-        for i := 0; i < this.Field_limit; i++ {
-            switch i {
-                case 0: fmt.Println(this.field[i], " ", "Objective: collect", this.Win_condition)
-                case 1: fmt.Println(this.field[i], " ", this.Objective, "is your objective")
-                case 2: fmt.Println(this.field[i], " ", this.Obstruction, "obstructs you")
-                case 3: fmt.Println(this.field[i], " ", this.Penalty, "is counterproductive")
-                case 4: fmt.Println(this.field[i], " ", this.Danger, "will end you")
-                case 5: fmt.Println(this.field[i], " ", this.Platform, "will allow you once")
-                case 6: fmt.Println(this.field[i], " ", this.Launcher_r, this.Launcher_l, this.Launcher_d, this.Launcher_u, "will move you")
-                case 7: fmt.Println(this.field[i], " ", "Quit with q (unless changed)")
-                case 8: fmt.Println(this.field[i], " ", "Ping yourself with with z (unless changed)")
-                case 9: fmt.Println(this.field[i], " ", "Execute action with \"Enter\"")
-                case 10: fmt.Println(this.field[i], " ", "Points:", this.points)
-                default: fmt.Println(this.field[i])
-            }
+    this.flush()
+    for i := 0; i < this.Field_limit; i++ {
+        switch i {
+            case 0: fmt.Println(this.field[i], " ", "Objective: collect", this.Win_condition)
+            case 1: fmt.Println(this.field[i], " ", this.Objective, "is your objective")
+            case 2: fmt.Println(this.field[i], " ", this.Obstruction, "obstructs you")
+            case 3: fmt.Println(this.field[i], " ", this.Penalty, "is counterproductive")
+            case 4: fmt.Println(this.field[i], " ", this.Danger, "will end you")
+            case 5: fmt.Println(this.field[i], " ", this.Platform, "will allow you once")
+            case 6: fmt.Println(this.field[i], " ", this.Launcher_r, this.Launcher_l, this.Launcher_d, this.Launcher_u, "will move you")
+            case 7: fmt.Println(this.field[i], " ", "Quit with q (unless changed)")
+            case 8: fmt.Println(this.field[i], " ", "Ping yourself with with z (unless changed)")
+            case 9: fmt.Println(this.field[i], " ", "Execute action with \"Enter\"")
+            case 10: fmt.Println(this.field[i], " ", "Points:", this.points)
+            default: fmt.Println(this.field[i])
         }
+    }
 }
 func (this *Vime) Run() {
     this.ping(5)
