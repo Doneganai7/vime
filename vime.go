@@ -18,6 +18,7 @@ type Vime struct {
 
     Win_condition int
     Field_limit int
+
     Obstruction string
     Objective string
     Danger string
@@ -30,14 +31,28 @@ type Vime struct {
     Launcher_d string
     Player string
     Player_alt string
+
+    Obstruction_prob int
+    Objective_prob int
+    Danger_prob int
+    Platform_prob int
+    Penalty_prob int
+    Launcher_r_prob int
+    Launcher_l_prob int
+    Launcher_u_prob int
+    Launcher_d_prob int
 }
 func (this *Vime) Initialize() {
     this.lost = false
     this.auto = false
     rand.Seed(time.Now().UTC().UnixNano())
+
     if this.Field_limit == 0 { this.Field_limit = 31 }
     if this.player_x == 0 { this.player_x = this.Field_limit / 2 }
     if this.player_y == 0 { this.player_y = this.Field_limit / 2 }
+    if this.Win_condition == 0 { this.Win_condition = 20 }
+
+    if this.Empty == "" { this.Empty = " " }
     if this.Player == "" { this.Player = "⍟" }
     if this.Player_alt == "" { this.Player_alt = "✪" }
     if this.Obstruction == "" { this.Obstruction = "𝌆" }
@@ -45,38 +60,47 @@ func (this *Vime) Initialize() {
     if this.Danger == "" { this.Danger = "⚠" }
     if this.Penalty == "" { this.Penalty = "-" }
     if this.Platform == "" { this.Platform = "⛀" }
-    if this.Empty == "" { this.Empty = " " }
     if this.Launcher_r == "" { this.Launcher_r = "→" }
     if this.Launcher_l == "" { this.Launcher_l = "←" }
     if this.Launcher_u == "" { this.Launcher_u = "↑" }
     if this.Launcher_d == "" { this.Launcher_d = "↓" }
-    if this.Win_condition == 0 { this.Win_condition = 20 }
+
+    if this.Danger_prob == 0 { this.Danger_prob = 10 }
+    if this.Penalty_prob == 0 { this.Penalty_prob = 20 }
+    if this.Obstruction_prob == 0 { this.Obstruction_prob = 15 }
+    if this.Platform_prob == 0 { this.Platform_prob = 5 }
+    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
+    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
+    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
+    if this.Launcher_l_prob == 0 { this.Launcher_l_prob = 2 }
+    if this.Objective_prob == 0 { this.Objective_prob = 4 }
+
     this.last = this.Empty
     this.field = make([][]string,this.Field_limit)
     for i := 0; i < this.Field_limit; i++ {
         this.field[i] = make([]string,this.Field_limit)
     }
-    var generated int
-    generated = 0
+    var objectives_generated int
+    objectives_generated = 0
     for i := 0; i < this.Field_limit; i++ {
         for j := 0; j < this.Field_limit; j++ {
             this.field[i][j] = this.Empty
-            if rand.Intn(100-0) < 10 { this.field[i][j] = this.Danger }
-            if rand.Intn(100-0) < 20 { this.field[i][j] = this.Penalty }
-            if rand.Intn(100-0) < 15 { this.field[i][j] = this.Obstruction }
-            if rand.Intn(100-0) < 5 { this.field[i][j] = this.Platform }
-            if rand.Intn(100-0) < 2 { this.field[i][j] = this.Launcher_r }
-            if rand.Intn(100-0) < 2 { this.field[i][j] = this.Launcher_l }
-            if rand.Intn(100-0) < 2 { this.field[i][j] = this.Launcher_u }
-            if rand.Intn(100-0) < 2 { this.field[i][j] = this.Launcher_d }
-            if rand.Intn(100-0) < 4 { this.field[i][j] = this.Objective; generated += 1 }
+            if rand.Intn(100-0) < this.Danger_prob { this.field[i][j] = this.Danger }
+            if rand.Intn(100-0) < this.Penalty_prob { this.field[i][j] = this.Penalty }
+            if rand.Intn(100-0) < this.Obstruction_prob { this.field[i][j] = this.Obstruction }
+            if rand.Intn(100-0) < this.Platform_prob { this.field[i][j] = this.Platform }
+            if rand.Intn(100-0) < this.Launcher_r_prob { this.field[i][j] = this.Launcher_r }
+            if rand.Intn(100-0) < this.Launcher_l_prob { this.field[i][j] = this.Launcher_l }
+            if rand.Intn(100-0) < this.Launcher_u_prob { this.field[i][j] = this.Launcher_u }
+            if rand.Intn(100-0) < this.Launcher_d_prob { this.field[i][j] = this.Launcher_d }
+            if rand.Intn(100-0) < this.Objective_prob { this.field[i][j] = this.Objective; objectives_generated += 1 }
             if i < 2 || i >= this.Field_limit - 2 || j < 2 || j >= this.Field_limit - 2 {
                 this.field[i][j] = this.Obstruction
             }
         }
     }
     this.field[this.player_x][this.player_y] = this.Player
-    if generated < this.Win_condition + 2 { this.Initialize() }
+    if objectives_generated < this.Win_condition + 2 { this.Initialize() }
 }
 func (this *Vime) flush() {
     for i := 0; i < 100; i++ { fmt.Println("") }
