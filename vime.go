@@ -99,7 +99,7 @@ func (this *Vime) Initialize() {
     this.lost = false
     this.auto = false
     this.last = this.Empty
-    this.instruction = " "
+    this.instruction = this.Key_ping
 
     this.field = make([][]string,this.Field_limit)
     for i := 0; i < this.Field_limit; i++ { this.field[i] = make([]string,this.Field_limit) }
