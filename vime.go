@@ -57,10 +57,6 @@ type Vime struct {
     Key_quit string
 }
 func (this *Vime) Initialize() {
-    this.lost = false
-    this.auto = false
-    rand.Seed(time.Now().UTC().UnixNano())
-
     if this.Field_limit == 0 { this.Field_limit = 31 }
     if this.player_x == 0 { this.player_x = this.Field_limit / 2 }
     if this.player_y == 0 { this.player_y = this.Field_limit / 2 }
@@ -100,13 +96,18 @@ func (this *Vime) Initialize() {
     if this.Key_ping == "" { this.Key_ping = "zZ" }
     if this.Key_quit == "" { this.Key_quit = "qQ" }
 
+    this.lost = false
+    this.auto = false
     this.last = this.Empty
+    this.instruction = " "
+
     this.field = make([][]string,this.Field_limit)
-    for i := 0; i < this.Field_limit; i++ {
-        this.field[i] = make([]string,this.Field_limit)
-    }
-    var objectives_generated int
-    objectives_generated = 0
+    for i := 0; i < this.Field_limit; i++ { this.field[i] = make([]string,this.Field_limit) }
+    this.populate()
+}
+func (this *Vime) populate() {
+    rand.Seed(time.Now().UTC().UnixNano())
+    var objectives_generated int = 0
     for i := 0; i < this.Field_limit; i++ {
         for j := 0; j < this.Field_limit; j++ {
             this.field[i][j] = this.Empty
@@ -126,7 +127,7 @@ func (this *Vime) Initialize() {
         }
     }
     this.field[this.player_x][this.player_y] = this.Player
-    if objectives_generated < this.Win_condition + 2 { this.Initialize() }
+    if objectives_generated < this.Win_condition + 2 { this.populate() }
 }
 func (this *Vime) flush() {
     for i := 0; i < 100; i++ { fmt.Println("") }
@@ -134,12 +135,12 @@ func (this *Vime) flush() {
 func (this *Vime) ping(input int) {
     for i := 0; i < input; i++ {
         this.flush()
-            this.field[this.player_y][this.player_x] = this.Player_alt
-            this.status()
-            time.Sleep(200000000)
-            this.field[this.player_y][this.player_x] = this.Player
-            this.status()
-            time.Sleep(200000000)
+        this.field[this.player_y][this.player_x] = this.Player_alt
+        this.status()
+        time.Sleep(200000000)
+        this.field[this.player_y][this.player_x] = this.Player
+        this.status()
+        time.Sleep(200000000)
     }
 }
 func (this *Vime) step_on() {
