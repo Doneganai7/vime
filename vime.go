@@ -3,12 +3,15 @@ import "fmt"
 import "math/rand"
 import "time"
 import "strings"
+import "strconv"
 
 type Vime struct {
     points int
     player_x int
     player_y int
     field [][]string
+    text []string
+    text_default []string
     instruction string
     result string
     last string
@@ -19,6 +22,7 @@ type Vime struct {
 
     Field_limit int
     Win_condition int
+    Text []string
 
     Obstruction string
     Objective string
@@ -104,6 +108,23 @@ func (this *Vime) Initialize() {
     this.field = make([][]string,this.Field_limit)
     for i := 0; i < this.Field_limit; i++ { this.field[i] = make([]string,this.Field_limit) }
     this.populate()
+
+    this.Text = make([]string,this.Field_limit)
+    this.text = make([]string,this.Field_limit)
+    this.text_default = make([]string,this.Field_limit)
+    this.text_default[0] = "Objective: collect %Win_condition%"
+    this.text_default[1] = "%Objective% is your objective"
+    this.text_default[2] = "%Obstruction% obstructs you"
+    this.text_default[3] = "%Penalty% is counterproductive"
+    this.text_default[4] = "%Danger% will end you"
+    this.text_default[5] = "%Platform% will allow you once"
+    this.text_default[6] = "%Launcher_r%%Launcher_l%%Launcher_u%%Launcher_d% will move you"
+    this.text_default[7] = "Quit with q (by default)"
+    this.text_default[8] = "Ping yourself with z (by default)"
+    this.text_default[9] = "Execute action with \"Enter\""
+    this.text_default[10] = "Points: %Points%"
+    this.text_default[11] = "Last Step: %result%"
+
 }
 func (this *Vime) populate() {
     rand.Seed(time.Now().UTC().UnixNano())
@@ -260,20 +281,27 @@ func (this *Vime) execute() {
 func (this *Vime) status() {
     this.flush()
     for i := 0; i < this.Field_limit; i++ {
-        switch i {
-        case 0: fmt.Println(this.field[i], " ", "Objective: collect", this.Win_condition)
-        case 1: fmt.Println(this.field[i], " ", this.Objective, "is your objective")
-        case 2: fmt.Println(this.field[i], " ", this.Obstruction, "obstructs you")
-        case 3: fmt.Println(this.field[i], " ", this.Penalty, "is counterproductive")
-        case 4: fmt.Println(this.field[i], " ", this.Danger, "will end you")
-        case 5: fmt.Println(this.field[i], " ", this.Platform, "will allow you once")
-        case 6: fmt.Println(this.field[i], " ", this.Launcher_r, this.Launcher_l, this.Launcher_d, this.Launcher_u, "will move you")
-        case 7: fmt.Println(this.field[i], " ", "Quit with q (unless changed)")
-        case 8: fmt.Println(this.field[i], " ", "Ping yourself with with z (unless changed)")
-        case 9: fmt.Println(this.field[i], " ", "Execute action with \"Enter\"")
-        case 10: fmt.Println(this.field[i], " ", "Points:", this.points)
-        default: fmt.Println(this.field[i])
+        if this.Text[i] != "" {
+            this.text[i] = this.Text[i]
+        } else {
+            this.text[i] = this.text_default[i]
         }
+        this.text[i] = strings.Replace(this.text[i], "%Points%", strconv.FormatInt(int64(this.points),10), -1)
+        this.text[i] = strings.Replace(this.text[i], "%player_x%", strconv.FormatInt(int64(this.player_x),10), -1)
+        this.text[i] = strings.Replace(this.text[i], "%player_y%", strconv.FormatInt(int64(this.player_y),10), -1)
+        this.text[i] = strings.Replace(this.text[i], "%Win_condition%", strconv.FormatInt(int64(this.Win_condition),10), -1)
+        this.text[i] = strings.Replace(this.text[i], "%Field_limit%", strconv.FormatInt(int64(this.Field_limit),10), -1)
+        this.text[i] = strings.Replace(this.text[i], "%result%", this.result, -1)
+        this.text[i] = strings.Replace(this.text[i], "%Objective%", this.Objective, -1)
+        this.text[i] = strings.Replace(this.text[i], "%Obstruction%", this.Obstruction, -1)
+        this.text[i] = strings.Replace(this.text[i], "%Penalty%", this.Penalty, -1)
+        this.text[i] = strings.Replace(this.text[i], "%Danger%", this.Danger, -1)
+        this.text[i] = strings.Replace(this.text[i], "%Platform%", this.Platform, -1)
+        this.text[i] = strings.Replace(this.text[i], "%Launcher_r%", this.Launcher_r, -1)
+        this.text[i] = strings.Replace(this.text[i], "%Launcher_l%", this.Launcher_l, -1)
+        this.text[i] = strings.Replace(this.text[i], "%Launcher_u%", this.Launcher_u, -1)
+        this.text[i] = strings.Replace(this.text[i], "%Launcher_d%", this.Launcher_d, -1)
+        fmt.Println(this.field[i], this.text[i])
     }
 }
 func (this *Vime) Run() {
