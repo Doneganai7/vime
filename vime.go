@@ -151,7 +151,7 @@ func (this *Vime) populate() {
     if objectives_generated < this.Win_condition + 2 { this.populate() }
 }
 func (this *Vime) flush() {
-    for i := 0; i < 100; i++ { fmt.Println("") }
+    fmt.Println(strings.Repeat("\n", 100))
 }
 func (this *Vime) ping(input int) {
     for i := 0; i < input; i++ {
@@ -280,6 +280,7 @@ func (this *Vime) execute() {
 }
 func (this *Vime) status() {
     this.flush()
+    output := ""
     for i := 0; i < this.Field_limit; i++ {
         if this.Text[i] != "" {
             this.text[i] = this.Text[i]
@@ -301,8 +302,9 @@ func (this *Vime) status() {
         this.text[i] = strings.Replace(this.text[i], "%Launcher_l%", this.Launcher_l, -1)
         this.text[i] = strings.Replace(this.text[i], "%Launcher_u%", this.Launcher_u, -1)
         this.text[i] = strings.Replace(this.text[i], "%Launcher_d%", this.Launcher_d, -1)
-        fmt.Println(this.field[i], this.text[i])
+        output += fmt.Sprintf("%v %v\n", this.field[i], this.text[i])
     }
+    fmt.Println(output)
 }
 func (this *Vime) Run() {
     this.ping(5)
