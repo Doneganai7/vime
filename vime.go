@@ -312,29 +312,29 @@ func (this *Vime) Run() {
         if this.points >= this.Win_condition { break }
         if this.lost { break }
         this.status()
-        fmt.Scanf("%s",&this.instruction)
+        fmt.Scanln(&this.instruction)
         this.execute()
     }
         this.flush()
     if this.points >= this.Win_condition {
         fmt.Println("You Win")
-        fmt.Scanf("%s",&this.instruction)
+        fmt.Scanln(&this.instruction)
     } else {
         switch this.death {
         case "danger":
             fmt.Println("You were ended.")
-            fmt.Scanf("%s",&this.instruction)
+            fmt.Scanln(&this.instruction)
         case "obstruction":
             fmt.Println("You were launched up against a wall until you lost conciousness.")
-            fmt.Scanf("%s",&this.instruction)
+            fmt.Scanln(&this.instruction)
         case "launch":
             fmt.Println("As you endlessly bounce between the launchers, you slowly resign yourself to your strange fate.")
             fmt.Println("You are absolutely sure that there are ways to die that are more stupid and trivial than this, but you cannot seem to think of any.")
             fmt.Println("Oh well, plenty of time for that now.")
-            fmt.Scanf("%s",&this.instruction)
+            fmt.Scanln(&this.instruction)
         default:
             fmt.Println("Game Over")
-            fmt.Scanf("%s",&this.instruction)
+            fmt.Scanln(&this.instruction)
         }
     }
 }
