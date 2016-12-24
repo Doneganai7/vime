@@ -4,6 +4,7 @@ import "math/rand"
 import "time"
 import "strings"
 import "strconv"
+import "github.com/nsf/termbox-go"
 
 type Vime struct {
     points int
@@ -12,7 +13,6 @@ type Vime struct {
     field [][]string
     text []string
     text_default []string
-    instruction string
     result string
     last string
     lost bool
@@ -103,7 +103,6 @@ func (this *Vime) Initialize() {
     this.lost = false
     this.auto = false
     this.last = this.Empty
-    this.instruction = this.Key_ping
 
     this.field = make([][]string,this.Field_limit)
     for i := 0; i < this.Field_limit; i++ { this.field[i] = make([]string,this.Field_limit) }
@@ -264,18 +263,17 @@ func (this *Vime) automove() {
     this.auto = false
     }
 }
-func (this *Vime) execute() {
-    var final_letter string = string(this.instruction[len(this.instruction)-1])
-    if strings.Contains(this.Key_r, final_letter) { this.right(1) }
-    if strings.Contains(this.Key_l, final_letter) { this.left(1) }
-    if strings.Contains(this.Key_u, final_letter) { this.up(1) }
-    if strings.Contains(this.Key_d, final_letter) { this.down(1) }
-    if strings.Contains(this.Key_R, final_letter) { this.right(2); this.instruction = this.Key_r }
-    if strings.Contains(this.Key_L, final_letter) { this.left(2); this.instruction = this.Key_l }
-    if strings.Contains(this.Key_U, final_letter) { this.up(2); this.instruction = this.Key_u }
-    if strings.Contains(this.Key_D, final_letter) { this.down(2); this.instruction = this.Key_d }
-    if strings.Contains(this.Key_ping, final_letter) { this.ping(3) }
-    if strings.Contains(this.Key_quit, final_letter) { this.lost = true }
+func (this *Vime) execute(instruction string) {
+    if strings.Contains(this.Key_r, instruction) { this.right(1) }
+    if strings.Contains(this.Key_l, instruction) { this.left(1) }
+    if strings.Contains(this.Key_u, instruction) { this.up(1) }
+    if strings.Contains(this.Key_d, instruction) { this.down(1) }
+    if strings.Contains(this.Key_R, instruction) { this.right(2) }
+    if strings.Contains(this.Key_L, instruction) { this.left(2) }
+    if strings.Contains(this.Key_U, instruction) { this.up(2) }
+    if strings.Contains(this.Key_D, instruction) { this.down(2) }
+    if strings.Contains(this.Key_ping, instruction) { this.ping(3) }
+    if strings.Contains(this.Key_quit, instruction) { this.lost = true }
     this.launch_count = 0
 }
 func (this *Vime) status() {
@@ -307,34 +305,39 @@ func (this *Vime) status() {
     fmt.Println(output)
 }
 func (this *Vime) Run() {
+    termbox.Init()
+    defer termbox.Close()
+
+    // Play game
     this.ping(5)
     for {
         if this.points >= this.Win_condition { break }
         if this.lost { break }
         this.status()
-        fmt.Scanln(&this.instruction)
-        this.execute()
+
+        event := termbox.PollEvent()
+        this.execute(fmt.Sprintf("%c", event.Ch))
+        master
     }
-        this.flush()
+
+    // Handle end of game
+    this.flush()
     if this.points >= this.Win_condition {
         fmt.Println("You Win")
-        fmt.Scanln(&this.instruction)
     } else {
         switch this.death {
         case "danger":
             fmt.Println("You were ended.")
-            fmt.Scanln(&this.instruction)
+
         case "obstruction":
             fmt.Println("You were launched up against a wall until you lost conciousness.")
-            fmt.Scanln(&this.instruction)
+
         case "launch":
             fmt.Println("As you endlessly bounce between the launchers, you slowly resign yourself to your strange fate.")
             fmt.Println("You are absolutely sure that there are ways to die that are more stupid and trivial than this, but you cannot seem to think of any.")
             fmt.Println("Oh well, plenty of time for that now.")
-            fmt.Scanln(&this.instruction)
-        default:
             fmt.Println("Game Over")
-            fmt.Scanln(&this.instruction)
         }
     }
+    termbox.PollEvent()  // Pause until next keypress
 }
