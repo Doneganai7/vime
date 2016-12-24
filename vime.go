@@ -150,7 +150,7 @@ func (this *Vime) populate() {
     if objectives_generated < this.Win_condition + 2 { this.populate() }
 }
 func (this *Vime) flush() {
-    for i := 0; i < 100; i++ { fmt.Println("") }
+    fmt.Println(strings.Repeat("\n", 100))
 }
 func (this *Vime) ping(input int) {
     for i := 0; i < input; i++ {
@@ -278,6 +278,7 @@ func (this *Vime) execute(instruction string) {
 }
 func (this *Vime) status() {
     this.flush()
+    output := ""
     for i := 0; i < this.Field_limit; i++ {
         if this.Text[i] != "" {
             this.text[i] = this.Text[i]
@@ -299,8 +300,9 @@ func (this *Vime) status() {
         this.text[i] = strings.Replace(this.text[i], "%Launcher_l%", this.Launcher_l, -1)
         this.text[i] = strings.Replace(this.text[i], "%Launcher_u%", this.Launcher_u, -1)
         this.text[i] = strings.Replace(this.text[i], "%Launcher_d%", this.Launcher_d, -1)
-        fmt.Println(this.field[i], this.text[i])
+        output += fmt.Sprintf("%v %v\n", this.field[i], this.text[i])
     }
+    fmt.Println(output)
 }
 func (this *Vime) Run() {
     termbox.Init()
@@ -312,8 +314,10 @@ func (this *Vime) Run() {
         if this.points >= this.Win_condition { break }
         if this.lost { break }
         this.status()
+
         event := termbox.PollEvent()
         this.execute(fmt.Sprintf("%c", event.Ch))
+        master
     }
 
     // Handle end of game
@@ -324,13 +328,14 @@ func (this *Vime) Run() {
         switch this.death {
         case "danger":
             fmt.Println("You were ended.")
+
         case "obstruction":
             fmt.Println("You were launched up against a wall until you lost conciousness.")
+
         case "launch":
             fmt.Println("As you endlessly bounce between the launchers, you slowly resign yourself to your strange fate.")
             fmt.Println("You are absolutely sure that there are ways to die that are more stupid and trivial than this, but you cannot seem to think of any.")
             fmt.Println("Oh well, plenty of time for that now.")
-        default:
             fmt.Println("Game Over")
         }
     }
