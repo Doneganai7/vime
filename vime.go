@@ -335,6 +335,7 @@ func (this *Vime) Run() {
             fmt.Println("As you endlessly bounce between the launchers, you slowly resign yourself to your strange fate.")
             fmt.Println("You are absolutely sure that there are ways to die that are more stupid and trivial than this, but you cannot seem to think of any.")
             fmt.Println("Oh well, plenty of time for that now.")
+        default:
             fmt.Println("Game Over")
         }
     }
