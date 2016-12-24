@@ -317,7 +317,6 @@ func (this *Vime) Run() {
 
         event := termbox.PollEvent()
         this.execute(fmt.Sprintf("%c", event.Ch))
-        master
     }
 
     // Handle end of game
